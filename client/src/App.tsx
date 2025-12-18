@@ -1,9 +1,26 @@
+import { useEffect, useState } from "react";
+import { api } from "./services/api";
+
 function App() {
+  const [status, setStatus] = useState<string>("Checking server...");
+
+  useEffect(() => {
+    api.healthCheck()
+      .then((data) => {
+        setStatus(data.message);
+      })
+      .catch(() => {
+        setStatus("Backend not reachable ❌");
+      });
+  }, []);
+
   return (
-    <>
-      <h1 className="text-3xl font-bold bg-amber-700">AI Knowledge Vault</h1>
-    </>
-  )
+    <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
+      <h1 className="text-xl font-semibold">
+        {status}
+      </h1>
+    </div>
+  );
 }
 
-export default App
+export default App;
