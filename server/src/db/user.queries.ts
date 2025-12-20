@@ -14,9 +14,12 @@ export const createUser = async (
     RETURNING id, email, password_hash, created_at;
   `;
 
+
   const values = [email, passwordHash];
 
   const { rows } = await pool.query<User>(query, values);
+  // returning statement in query will return the inserted user
+  // here rows contain only one user as we are inserting one user rows = [our_user]
   return rows[0];
 };
 
