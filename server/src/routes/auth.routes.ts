@@ -16,12 +16,12 @@ router.post("/signup", async (req: Request, res: Response) => {
       });
     }
 
-    const user = await signup(email, password);
-
+    const result = await signup(email, password);
     return res.status(201).json({
       message: "User created successfully",
-      user,
+      ...result
     });
+
   } catch (error: any) {
     return res.status(400).json({
       message: error.message || "Signup failed",
@@ -42,11 +42,11 @@ router.post("/login", async (req: Request, res: Response) => {
       });
     }
 
-    const user = await login(email, password);
+    const result = await login(email, password);
 
     return res.status(200).json({
       message: "Login successful",
-      user,
+      ...result,
     });
   } catch (error: any) {
     return res.status(401).json({
@@ -54,5 +54,6 @@ router.post("/login", async (req: Request, res: Response) => {
     });
   }
 });
+
 
 export default router;
