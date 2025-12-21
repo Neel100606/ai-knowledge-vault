@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { signup, login } from "../controllers/auth.controller";
 import { signAccessToken, verifyRefreshToken } from "../utils/jwt";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ const router = Router();
  */
 const cookieOptions = {
   httpOnly: true,
-  secure: false, // ⚠️ set true in production (HTTPS)
+  secure: process.env.NODE_ENV === "production",
   sameSite: "strict" as const,
 };
 
@@ -114,5 +115,10 @@ router.post("/refresh", (req, res) => {
     res.status(401).json({ message: "Invalid refresh token" });
   }
 });
+
+router.get("/me", authMiddleware, (req, res) => {
+  res.json({ userId: req.userId });
+});
+
 
 export default router;

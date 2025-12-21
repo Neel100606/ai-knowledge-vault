@@ -1,8 +1,5 @@
 export const isAuthenticated = async () => {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/documents`, {
-    credentials: "include",
-  });
-
+  const res = await fetch("/auth/me", { credentials: "include" });
   return res.ok;
 };
 
