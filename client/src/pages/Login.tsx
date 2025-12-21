@@ -8,16 +8,16 @@ const Login = () => {
   
   const navigate = useNavigate();
   const handleLogin = async () => {
-    try {
-      const res = await login(email, password);
-      // 🔑 STORE TOKEN HERE
-      localStorage.setItem("token", res.token);
-      navigate("/dashboard");
+  try {
+    await login(email, password); 
+    // backend sets cookies automatically
 
-    } catch (err) {
-      console.error("Login failed");
-    }
-  };
+    navigate("/dashboard");
+  } catch {
+    console.error("Login failed");
+  }
+};
+
 
   return (
     <div>

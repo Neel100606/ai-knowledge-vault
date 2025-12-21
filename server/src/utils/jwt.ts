@@ -1,19 +1,28 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 
-if (!JWT_SECRET) {
-  throw new Error("❌ JWT_SECRET is not defined");
-}
-
-export const signToken = (userId: string): string => {
+export const signAccessToken = (userId: string) => {
   return jwt.sign(
     { userId },
     JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "15m" }
   );
 };
 
-export const verifyToken = (token: string): { userId: string } => {
+export const signRefreshToken = (userId: string) => {
+  return jwt.sign(
+    { userId },
+    JWT_REFRESH_SECRET,
+    { expiresIn: "7d" }
+  );
+};
+
+export const verifyAccessToken = (token: string) => {
   return jwt.verify(token, JWT_SECRET) as { userId: string };
+};
+
+export const verifyRefreshToken = (token: string) => {
+  return jwt.verify(token, JWT_REFRESH_SECRET) as { userId: string };
 };

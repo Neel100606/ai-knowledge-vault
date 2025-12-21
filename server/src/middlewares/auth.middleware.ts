@@ -1,24 +1,26 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../utils/jwt";
+import { verifyAccessToken } from "../utils/jwt";
 
 export interface AuthRequest extends Request {
   userId?: string;
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      message: "Unauthorized",
-    });
-  }
-
+export const authMiddleware = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const token = authHeader.split(" ")[1];
-    const decoded = verifyToken(token);
+    // 🔑 Read access token from HttpOnly cookie
+    const token = req.cookies.access_token;
 
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const decoded = verifyAccessToken(token);
     req.userId = decoded.userId;
+
     next();
   } catch {
     return res.status(401).json({

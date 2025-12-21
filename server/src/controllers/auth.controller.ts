@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { createUser, findUserByEmail } from '../db/user.queries';
 import { User } from '../types/user';
-import { signToken } from "../utils/jwt";
+import { signAccessToken, signRefreshToken } from "../utils/jwt";
 
 export const signup = async (email: string, password: string) => {
   const existingUser = await findUserByEmail(email);
@@ -12,13 +12,13 @@ export const signup = async (email: string, password: string) => {
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await createUser(email, passwordHash);
 
-  const token = signToken(user.id);
-
   const { password_hash, ...safeUser } = user;
 
   return {
     user: safeUser,
-    token,
+    accessToken: signAccessToken(user.id),
+    refreshToken: signRefreshToken(user.id),
+
   };
 };
 
@@ -37,12 +37,12 @@ export const login = async (
     throw new Error("Invalid email or password");
   }
 
-  const token = signToken(user.id);
   const { password_hash, ...safeUser } = user;
 
   return {
     user: safeUser,
-    token,
+    accessToken: signAccessToken(user.id),
+    refreshToken: signRefreshToken(user.id),
   };
 };
 
