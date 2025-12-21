@@ -1,9 +1,25 @@
-const Dashboard = () => {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold bg-amber-700">Dashboard</h1>
-    </div>
-  )
-}
+import { useNavigate } from "react-router-dom";
+import { logout } from "../utils/auth";
 
-export default Dashboard
+const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();              // clear token / user data
+    navigate("/login");    // redirect to login page
+  };
+
+  return (
+    <div className="dashboard-container">
+      <h1>Dashboard</h1>
+
+      <p>You are logged in 🎉</p>
+
+      <button onClick={handleLogout}>
+        Logout
+      </button>
+    </div>
+  );
+};
+
+export default Dashboard;

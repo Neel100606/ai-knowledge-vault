@@ -1,15 +1,18 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL as string;
+import axios from "axios";
 
-if (!API_BASE_URL) {
-  throw new Error("VITE_API_URL is not defined");
-}
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-export const api = {
-  async healthCheck() {
-    const res = await fetch(`${API_BASE_URL}/health`);
-    if (!res.ok) {
-      throw new Error("Health check failed");
-    }
-    return res.json();
-  },
-};
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+// Attach token to every request
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
