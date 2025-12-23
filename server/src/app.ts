@@ -6,6 +6,7 @@ import documentRoutes from "./routes/document.routes";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import cookieParser from "cookie-parser";
 
+import uploadRoutes from "./routes/upload.routes";
 
 const app: Application = express();
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/documents", documentRoutes);
+app.use("/upload", uploadRoutes);
 
 app.get("/protected", authMiddleware, (req, res) => {
   res.json({
